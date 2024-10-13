@@ -2,13 +2,63 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:SnakeQuiz.Converters"
-        Title="SnakeQuiz" Height="450" Width="450">
+        Title="SnakeQuiz" Height="450" Width="650">
     <Window.Resources>
+        <!-- Converter for cell color based on snake presence -->
         <local:SnakeCellColorConverter x:Key="SnakeCellColorConverter" />
+
+        <!-- Button Style -->
+        <Style TargetType="Button" x:Key="StyledButton">
+            <Setter Property="Background" Value="#007ACC" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Width" Value="60" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="10" 
+                                BorderBrush="Transparent" 
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Hover Trigger -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#005999" />
+                            </Trigger>
+                            <!-- Pressed Trigger -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#003F73" />
+                            </Trigger>
+                            <!-- Disabled Trigger -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#D3D3D3" />
+                                <!-- Light gray background for disabled -->
+                                <Setter Property="Foreground" Value="#A9A9A9" />
+                                <!-- Dark gray foreground for disabled text -->
+                                <Setter Property="Cursor" Value="Arrow" />
+                                <!-- Regular arrow cursor for disabled -->
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid>
-        <!-- Game Grid -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Game Grid in the first column -->
         <ItemsControl ItemsSource="{Binding GridCells}" Margin="20">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -23,14 +73,14 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <!-- Control Buttons -->
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center">
-            <Button Content="Up" Command="{Binding MoveCommand}" CommandParameter="Up" IsEnabled="{Binding CanMoveUp}"/>
-            <StackPanel Orientation="Horizontal">
-                <Button Content="Left" Command="{Binding MoveCommand}" CommandParameter="Left" IsEnabled="{Binding CanMoveLeft}"/>
-                <Button Content="Right" Command="{Binding MoveCommand}" CommandParameter="Right" IsEnabled="{Binding CanMoveRight}"/>
+        <!-- Control Buttons with Custom Style in the second column -->
+        <StackPanel Orientation="Vertical" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
+            <Button Content="Up" Command="{Binding MoveCommand}" CommandParameter="Up" Style="{StaticResource StyledButton}"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Left" Command="{Binding MoveCommand}" CommandParameter="Left" Style="{StaticResource StyledButton}"/>
+                <Button Content="Right" Command="{Binding MoveCommand}" CommandParameter="Right" Style="{StaticResource StyledButton}"/>
             </StackPanel>
-            <Button Content="Down" Command="{Binding MoveCommand}" CommandParameter="Down" IsEnabled="{Binding CanMoveDown}"/>
+            <Button Content="Down" Command="{Binding MoveCommand}" CommandParameter="Down" Style="{StaticResource StyledButton}"/>
         </StackPanel>
     </Grid>
 </Window>
