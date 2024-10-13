@@ -1,42 +1,42 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace SnakeQuiz.Model
 {
     public class SnakeModel
     {
-        public List<Point> SnakeParts { get; set; }
-        public Point FoodPosition { get; set; }
-        public int Direction { get; set; } // 0: Up, 1: Right, 2: Down, 3: Left
-        public bool IsGameOver { get; set; }
+        public List<Point> Body { get; private set; }
+        public int GridSize { get; private set; }
 
-        public SnakeModel()
+        public SnakeModel(int gridSize, int initialLength)
         {
-            SnakeParts = new List<Point> { new Point(5, 5) }; // Initial position
-            GenerateFood();
-            Direction = 1; // Initial direction (Right)
-            IsGameOver = false;
+            GridSize = gridSize;
+            InitializeSnake(initialLength);
         }
 
-        public void Move()
+        private void InitializeSnake(int initialLength)
         {
-            if (IsGameOver) return;
-
-            // Move snake logic here
+            Body = new List<Point>();
+            for (int i = 0; i < initialLength; i++)
+            {
+                Body.Add(new Point(i, 0)); // Initialize snake horizontally from the top-left
+            }
         }
 
-        public void ChangeDirection(int newDirection)
+        public bool Move(Point direction)
         {
-            // Change direction logic here
-        }
+            Point newHead = new Point(Body[0].X + direction.X, Body[0].Y + direction.Y);
 
-        public void GenerateFood()
-        {
-            // Food generation logic here
+            if (newHead.X < 0 || newHead.Y < 0 || newHead.X >= GridSize || newHead.Y >= GridSize)
+                return false;
+
+            if (Body.Skip(1).Contains(newHead))
+                return false;
+
+            Body.Insert(0, newHead);
+            Body.RemoveAt(Body.Count - 1);
+            return true;
         }
     }
 }
